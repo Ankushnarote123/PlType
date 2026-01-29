@@ -21,13 +21,12 @@ const ivuser=data.invalid_credentials.invalid_username;
 });*/
 
 
-test('@smoke  navigate to page and login', async ({ page }) => {
+test('@smoke login test', async ({ page }) => {
      const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.login(username, password); 
     await page.waitForLoadState("domcontentloaded");
      const redirectedUrl = page.url();
-      await page.waitForLoadState("domcontentloaded");
      console.log("Redirected URL after login:", redirectedUrl);
      await expect.soft(redirectedUrl).toContain("/inventory.html");
 

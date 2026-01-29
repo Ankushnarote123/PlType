@@ -38,7 +38,8 @@ jobs:
 
       # Run smoke tests
       - name: Run Playwright Smoke Tests
-        run: npx playwright test --grep @smoke
+        run: npx playwright test --grep "@smoke"
+
 
       # Upload Playwright report
       - name: Upload Playwright report
