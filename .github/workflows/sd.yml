@@ -1,47 +1,54 @@
 name: Smoke Tests (Playwright)
 
 on:
-  # Run every 30 minutes
+  # Run once every day (6 AM UTC)
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "0 6 * * *"
 
-  # Allow manual trigger from GitHub UI
+  # Manual trigger with env selection
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
-  # Run only when pushing to your branch
+  # Run on push to these branches
   push:
     branches:
-      - ankuNew   
+      - ankuNew
+      - main
 
 jobs:
   smoke-tests:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # Install Playwright browsers
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      # Run smoke tests
       - name: Run Playwright Smoke Tests
+        env:
+          # For manual runs → selected input
+          # For schedule runs → default to staging
+          ENV: ${{ github.event.inputs.environment || 'staging' }}
         run: npx playwright test --grep "@smoke"
 
-
-      # Upload Playwright report
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
