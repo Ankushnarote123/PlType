@@ -27,9 +27,10 @@ test('navigate to page and login', async ({ page }) => {
   await loginPage.login(username, password); 
     await page.waitForLoadState("domcontentloaded");
      const redirectedUrl = page.url();
-
+      await page.waitForLoadState("domcontentloaded");
      console.log("Redirected URL after login:", redirectedUrl);
      await expect.soft(redirectedUrl).toContain("/inventory.html");
+
 });
 
 test("products count", async ({ page }) => {
