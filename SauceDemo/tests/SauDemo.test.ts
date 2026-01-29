@@ -21,7 +21,7 @@ const ivuser=data.invalid_credentials.invalid_username;
 });*/
 
 
-test('navigate to page and login', async ({ page }) => {
+test('@smoke  navigate to page and login', async ({ page }) => {
      const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.login(username, password); 
