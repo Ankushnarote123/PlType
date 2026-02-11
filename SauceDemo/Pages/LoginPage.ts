@@ -16,8 +16,9 @@ export class LoginPage {
 
     // Actions
     async goto() {
-        console.log('Navigating to /');
+        console.log('Navigating to Login Page');
   await this.page.goto('/');
+  console.log('Navigation to Login Page completed');
 
 }
 

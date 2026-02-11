@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Load environment URLs from SauceDemo/env.js (CommonJS export)
+const envConfig = require('./SauceDemo/env.js');
+// Choose environment by `ENV` env var (production or staging). Default: staging
+const envName = process.env.ENV && process.env.ENV.toLowerCase() === 'production' ? 'production' : 'staging';
+const baseURLFromEnv = envConfig && envConfig.sauceDemo && envConfig.sauceDemo[envName]
+  ? envConfig.sauceDemo[envName]
+  : 'https://www.saucedemo.com/';
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -12,7 +20,10 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  
+  testDir: './SauceDemo/tests',
+
+  //testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -24,12 +35,25 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  timeout: 60000,
+  expect: {
+    timeout: 5000
+  },
+
+
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: 'https://www.saucedemo.com',
 
+    navigationTimeout: 10000,
+    actionTimeout: 15000,
+
+    viewport: { width: 1280, height: 720 },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    headless: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
@@ -76,4 +100,10 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+  
+ // test.use({
+ //   actionTimeout: 10000,
+  // testTimeout: 70000
+   //}),
+
 });

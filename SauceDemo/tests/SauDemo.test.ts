@@ -21,15 +21,19 @@ const ivuser=data.invalid_credentials.invalid_username;
 });*/
 
 
-test('navigate to page and login', async ({ page }) => {
+test('@smoke login test', async ({ page }) => {
      const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.login(username, password); 
     await page.waitForLoadState("domcontentloaded");
      const redirectedUrl = page.url();
-      await page.waitForLoadState("domcontentloaded");
      console.log("Redirected URL after login:", redirectedUrl);
      await expect.soft(redirectedUrl).toContain("/inventory.html");
+     
+     const productsPage = new ProductsPage(page);
+     await productsPage.sortByPriceHighToLow();
+     await page.screenshot({ path: 'screenshots/full-page.png' });
+
 
 });
 
@@ -89,3 +93,19 @@ test("validate invalid login", async ({ page }) => {
     await expect(errorMessage).toContain("Epic sadface: Username and password do not match any user in this service");
     console.log("Error message displayed for invalid login.");
 });
+
+
+test.only('test page url' , async({page}) => {
+
+   const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login(username, password); 
+//await page.getByRole('link').all();
+//or
+
+const links=  await page.locator('a');
+const count = await links.count();
+console.log("Number of links on the page:", count);
+
+});
+
