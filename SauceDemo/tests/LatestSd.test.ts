@@ -1,87 +1,53 @@
-import { test, expect } from "@playwright/test";    
-import { LoginPage } from '../Pages/LoginPage';
-import { ProductsPage } from '../Pages/ProductsPage';
-import { CartPage } from '../Pages/CartPage';
-import { CheckoutPage } from "../Pages/CheckoutPage";
-import { ConfirmationPage } from "../Pages/ConfirmationPage";
+import { test, expect } from "@playwright/test";
 
-import data from '../saucedemo.testdata.json';
+ /*test.use({
+    actionTimeout: 10000
+  });*/
 
 
-const username = data.credentials.valid_username;
-const password = data.credentials.valid_password;
+//single file upload test
+test('file upload test', async({page})=>
+{   
+    await page.goto("http://cgi-lib.berkeley.edu/ex/fup.html");        
 
-/*beforeEach(async ({page})=>{
-    console.log("Starting a new test...");
-});*/
+    const filePath = 'C:\\Users\\Lenovo\\Downloads\\Unconfirmed 477808.crdownload';
 
-test('navigate to page and login', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-     await loginPage.login(username, password);
-     await page.waitForLoadState("networkidle");
-     const redirectedUrl = page.url();
-     console.log("Redirected URL after login:", redirectedUrl);
-     await expect.soft(redirectedUrl).toContain("/inventory.html");
-});
-
-test("products count", async ({ page }) => {
-
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-
-    await loginPage.goto();
-    await loginPage.login(username, password);
-
-    await productsPage.waitForPageLoad();
-
-    const count = await productsPage.getProductCount();
-    console.log("Total products:", count);
-
-    await productsPage.printAllProductNames();
-});
-
-test("add to cart", async ({ page }) => {
-     const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-
-    await loginPage.goto();
-    await loginPage.login(username, password);
-    await productsPage.waitForPageLoad(); 
-    await productsPage.addToCart();
-    const cartItemCount = await productsPage.getCartItemCount();
-    await expect(cartItemCount).toBe('1');
-    console.log("Cart badge shows 1 item.");
-});
-
-test('complete the purchase', async({page})=>{
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    const checkoutPage = new CheckoutPage(page);
-    const confirmationPage = new ConfirmationPage(page);
-
-    await loginPage.goto();
+    await page.locator('input[name="upfile"]').setInputFiles(filePath);  
     
-    await loginPage.login(username, password);
-    await productsPage.waitForPageLoad(); 
-    await productsPage.addToCart();
-    await cartPage.clickoncartbtn();
-    await cartPage.clickCheckout();
-    await checkoutPage.enterCheckoutInformation("jcb", "test", "12345");
-    await checkoutPage.clickContinue();
-    await cartPage.clickonFinishbtn();
-    await confirmationPage.getConfirmationMessage();
-    await confirmationPage.validateElementsOnConfirmationPage();
+    await page.waitForTimeout(5000);
+
 });
 
-test("validate invalid login", async ({ page }) => {
-    const loginPage = new LoginPage(page);      
-    await loginPage.goto();
-    await loginPage.login(username, password);
-    console.log("Using invalid credentials and invalid_password");
-    const errorMessage = await loginPage.validateErrorMessage();
-    await expect(errorMessage).toContain("Epic sadface: Username and password do not match any user in this service");
-    console.log("Error message displayed for invalid login.");
-    console.log("Using invalid credentials and invalid_password");
+
+//multiple file upload test
+test.only('multiple file upload', async({page})=>
+{
+
+    await page.goto('https://davidwalsh.name/demo/multiple-file-upload.php');
+
+    await page.locator('#filesToUpload').setInputFiles([
+        'C:\\Users\\Lenovo\\Downloads\\Unconfirmed 477808.crdownload',
+        "C:\\Users\\Lenovo\\Downloads\\image (6).png",
+        "C:\\Users\\Lenovo\\Downloads\\image (5).png" ]);
+           
+    await page.waitForTimeout(5000);
 });
+
+
+test('mouse hover actions', async({page})=>
+{
+
+    await page.goto("https://www.spicejet.com/");
+
+    await page.locator('//div[contains (text(), "Add-ons")]').hover();
+  
+await page.getByText('Student Discount').click();
+//await page.getByRole('link', { name: 'Student Discount' }).click();
+
+//await page.getByText('SpiceLock').click()
+// ;
+
+
+
+});
+

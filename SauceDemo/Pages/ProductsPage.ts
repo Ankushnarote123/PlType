@@ -11,6 +11,12 @@ export class ProductsPage {
     private products = 'div.inventory_item_label';
     private cartBadge = '.shopping_cart_badge';
     private addToCartButton = 'button[data-test="add-to-cart-sauce-labs-backpack"]';
+     private sortDropdown = '[data-test="product-sort-container"]';
+
+  async sortByPriceHighToLow() {
+    await this.page.locator(this.sortDropdown)
+      .selectOption('hilo');
+  }
 
     async waitForPageLoad() {
         await this.page.waitForLoadState("networkidle");

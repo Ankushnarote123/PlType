@@ -35,12 +35,25 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  timeout: 60000,
+  expect: {
+    timeout: 5000
+  },
+
+
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'https://www.saucedemo.com',
 
+    navigationTimeout: 10000,
+    actionTimeout: 15000,
+
+    viewport: { width: 1280, height: 720 },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    headless: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
@@ -87,4 +100,10 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+  
+ // test.use({
+ //   actionTimeout: 10000,
+  // testTimeout: 70000
+   //}),
+
 });
